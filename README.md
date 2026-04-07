@@ -23,6 +23,17 @@ A powerful AI-powered code review system that analyzes code using advanced langu
 - **AI Engine:** Groq API (llama3-70b-8192)
 - **Environment:** Python 3.8+
 
+## 📸 Screenshots
+
+### 🏠 Home Page
+![Home](assets/home.png)
+
+### 💻 Code Input
+![Code Input](assets/code-input.png)
+
+### 🤖 AI Review Output
+![Output](assets/review-output.png)
+
 ## Setup Instructions
 
 ### Prerequisites
