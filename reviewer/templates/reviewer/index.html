@@ -1,0 +1,206 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Code Reviewer - Code Analysis Powered by AI</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <div class="header-content">
+          <div class="logo">AI Code Reviewer</div>
+          <a href="https://github.com" target="_blank" class="github-link">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.375 3.375 0 0 0-.975-2.438 3.75 3.75 0 0 1 .6-5.438c.53-.46 1.2-.995 2.175-1.425a3.75 3.75 0 0 1 4.2 3.75 3.75 3.75 0 0 1-1.35 2.85 3.625 3.625 0 0 0 .9 2.326 3.375 3.375 0 0 0 2.475.75c1.35-.175 2.7-1.05 3.675-2.025"
+              ></path>
+              <path d="M12 15v4m-8-2h16"></path>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="hero">
+        <h1>Review Your Code with AI</h1>
+        <p>Powered by Advanced AI Analysis</p>
+      </section>
+
+      <div class="error-message"></div>
+
+      <section class="loading-spinner">
+        <div class="spinner"></div>
+        <p>Analyzing your code...</p>
+      </section>
+
+      <section class="input-section">
+        <div class="input-area">
+          <label for="code-input">Paste Your Code</label>
+          <textarea
+            id="code-input"
+            placeholder="Paste your code here..."
+          ></textarea>
+        </div>
+
+        <div class="input-area">
+          <label>Upload File</label>
+          <div class="file-upload-wrapper">
+            <div class="upload-icon">📁</div>
+            <div class="upload-text">Upload a code file</div>
+            <div class="upload-hint">
+              .py, .js, .ts, .java, .cpp, .c, .go, .rb, .php, .rs
+            </div>
+          </div>
+          <input type="file" id="file-input" />
+          <div class="file-name"></div>
+        </div>
+      </section>
+
+      <section class="controls">
+        <select id="language-select" class="language-select">
+          <option value="Auto-detect">Auto-detect Language</option>
+          <option value="Python">Python</option>
+          <option value="JavaScript">JavaScript</option>
+          <option value="TypeScript">TypeScript</option>
+          <option value="Java">Java</option>
+          <option value="C++">C++</option>
+          <option value="C">C</option>
+          <option value="Go">Go</option>
+          <option value="Ruby">Ruby</option>
+          <option value="PHP">PHP</option>
+          <option value="Rust">Rust</option>
+        </select>
+        <button id="review-btn" class="button">Review Code</button>
+      </section>
+
+      <section id="results-section" class="results-section">
+        <div class="summary-card">
+          <div class="summary-header">
+            <div class="summary-title">Analysis Summary</div>
+            <div>
+              <span class="badge language" id="summary-language">Unknown</span>
+              <span class="badge" id="overall-score-badge">0</span>
+            </div>
+          </div>
+          <div id="summary-text" class="summary-text"></div>
+        </div>
+
+        <div class="scores-grid">
+          <div class="score-card">
+            <div class="score-label">Readability</div>
+            <div class="score-value" id="score-readability">0</div>
+            <div class="score-bar">
+              <div class="score-fill" id="readability-fill"></div>
+            </div>
+          </div>
+          <div class="score-card">
+            <div class="score-label">Performance</div>
+            <div class="score-value" id="score-performance">0</div>
+            <div class="score-bar">
+              <div class="score-fill" id="performance-fill"></div>
+            </div>
+          </div>
+          <div class="score-card">
+            <div class="score-label">Best Practices</div>
+            <div class="score-value" id="score-best-practices">0</div>
+            <div class="score-bar">
+              <div class="score-fill" id="best-practices-fill"></div>
+            </div>
+          </div>
+          <div class="score-card">
+            <div class="score-label">Overall</div>
+            <div class="score-value" id="score-overall">0</div>
+            <div class="score-bar">
+              <div class="score-fill" id="overall-fill"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tabs">
+          <button class="tab active" data-tab="bugs">🐛 Bugs</button>
+          <button class="tab" data-tab="improvements">💡 Suggestions</button>
+          <button class="tab" data-tab="security">🔒 Security</button>
+          <button class="tab" data-tab="ast">🔍 Static Analysis</button>
+          <button class="tab" data-tab="refactored">✨ Refactored</button>
+        </div>
+
+        <div id="bugs-content" class="tab-content active">
+          <div id="bugs-list" class="bugs-list"></div>
+        </div>
+
+        <div id="improvements-content" class="tab-content">
+          <div id="improvements-list" class="improvements-list"></div>
+        </div>
+
+        <div id="security-content" class="tab-content">
+          <div id="security-list" class="security-list"></div>
+        </div>
+
+        <div id="ast-content" class="tab-content">
+          <div id="ast-list" class="ast-list"></div>
+        </div>
+
+        <div id="refactored-content" class="tab-content">
+          <div class="refactored-code-section">
+            <div class="refactored-header">
+              <div>Refactored Code</div>
+              <button class="copy-button">Copy Code</button>
+            </div>
+            <div class="code-block" id="refactored-code-block"></div>
+          </div>
+
+          <div style="margin-top: 30px">
+            <h3 style="margin-bottom: 20px; font-size: 16px; font-weight: 600">
+              Time & Space Complexity
+            </h3>
+            <div class="complexity-section" id="complexity-section"></div>
+          </div>
+
+          <div style="margin-top: 30px">
+            <h3 style="margin-bottom: 20px; font-size: 16px; font-weight: 600">
+              Top Priorities
+            </h3>
+            <div class="priorities-list" id="priorities-list"></div>
+          </div>
+        </div>
+
+        <div style="margin-top: 40px">
+          <h3 style="margin-bottom: 20px; font-size: 16px; font-weight: 600">
+            Side-by-Side Diff
+          </h3>
+          <div class="diff-section">
+            <div class="diff-pane">
+              <div class="diff-title">Original Code</div>
+              <div class="diff-code" id="original-diff"></div>
+            </div>
+            <div class="diff-pane">
+              <div class="diff-title">Refactored Code</div>
+              <div class="diff-code" id="refactored-diff"></div>
+            </div>
+          </div>
+        </div>
+
+        <button class="clear-button" id="clear-btn">Clear Results</button>
+      </section>
+    </main>
+
+    <footer>
+      <p>Built with AI • Powered by Groq API • Django Backend</p>
+    </footer>
+
+    <script src="{% static 'js/main.js' %}"></script>
+  </body>
+</html>
